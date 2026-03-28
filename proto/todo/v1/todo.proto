@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package todo.v1;
+
+option go_package = "github.com/kassshi/golang-practice/gen/todo/v1;todov1";
+service TodoService {
+  rpc Ping(PingRequest) returns (PingResponse);
+}
+
+message PingRequest {}
+
+message PingResponse {
+  string message = 1;
+}
