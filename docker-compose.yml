@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:18.3
+    image: postgres:17
     restart: always
     ports:
       - 5432:5432
