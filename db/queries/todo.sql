@@ -13,6 +13,7 @@ FROM
   todos
 WHERE
   id = $1
+  AND user_id = $2
 LIMIT
   1;
 
@@ -29,12 +30,18 @@ ORDER BY
 -- name: UpdateTodoStatus :exec
 UPDATE todos
 SET
-  status = $2,
+  title = $3,
+  description = $4,
+  status = $5,
   updated_at = NOW()
 WHERE
-  id = $1;
+  id = $1
+  AND user_id = $2
+RETURNING
+  *;
 
 -- name: DeleteTodo :exec
 DELETE FROM todos
 WHERE
-  id = $1;
+  id = $1
+  AND user_id = $2;
