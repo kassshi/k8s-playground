@@ -13,8 +13,8 @@ import (
 type Querier interface {
 	CreateTodo(ctx context.Context, arg CreateTodoParams) (Todo, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
-	DeleteTodo(ctx context.Context, id pgtype.UUID) error
-	GetTodoByID(ctx context.Context, id pgtype.UUID) (Todo, error)
+	DeleteTodo(ctx context.Context, arg DeleteTodoParams) error
+	GetTodoByID(ctx context.Context, arg GetTodoByIDParams) (Todo, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	GetUserByID(ctx context.Context, id pgtype.UUID) (User, error)
 	ListTodosByUserID(ctx context.Context, userID pgtype.UUID) ([]Todo, error)

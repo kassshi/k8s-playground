@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"connectrpc.com/connect"
-	v1 "github.com/kassshi/golang-practice/gen/user/v1"
+	v1 "github.com/kassshi/golang-practice/internal/gen/user/v1"
 	"github.com/kassshi/golang-practice/internal/service"
 )
 

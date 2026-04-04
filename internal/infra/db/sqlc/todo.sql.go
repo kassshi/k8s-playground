@@ -53,10 +53,16 @@ const deleteTodo = `-- name: DeleteTodo :exec
 DELETE FROM todos
 WHERE
   id = $1
+  AND user_id = $2
 `
 
-func (q *Queries) DeleteTodo(ctx context.Context, id pgtype.UUID) error {
-	_, err := q.db.Exec(ctx, deleteTodo, id)
+type DeleteTodoParams struct {
+	ID     pgtype.UUID `json:"id"`
+	UserID pgtype.UUID `json:"user_id"`
+}
+
+func (q *Queries) DeleteTodo(ctx context.Context, arg DeleteTodoParams) error {
+	_, err := q.db.Exec(ctx, deleteTodo, arg.ID, arg.UserID)
 	return err
 }
 
@@ -67,12 +73,18 @@ FROM
   todos
 WHERE
   id = $1
+  AND user_id = $2
 LIMIT
   1
 `
 
-func (q *Queries) GetTodoByID(ctx context.Context, id pgtype.UUID) (Todo, error) {
-	row := q.db.QueryRow(ctx, getTodoByID, id)
+type GetTodoByIDParams struct {
+	ID     pgtype.UUID `json:"id"`
+	UserID pgtype.UUID `json:"user_id"`
+}
+
+func (q *Queries) GetTodoByID(ctx context.Context, arg GetTodoByIDParams) (Todo, error) {
+	row := q.db.QueryRow(ctx, getTodoByID, arg.ID, arg.UserID)
 	var i Todo
 	err := row.Scan(
 		&i.ID,
@@ -128,18 +140,32 @@ func (q *Queries) ListTodosByUserID(ctx context.Context, userID pgtype.UUID) ([]
 const updateTodoStatus = `-- name: UpdateTodoStatus :exec
 UPDATE todos
 SET
-  status = $2,
+  title = $3,
+  description = $4,
+  status = $5,
   updated_at = NOW()
 WHERE
   id = $1
+  AND user_id = $2
+RETURNING
+  id, user_id, title, description, status, created_at, updated_at
 `
 
 type UpdateTodoStatusParams struct {
-	ID     pgtype.UUID `json:"id"`
-	Status string      `json:"status"`
+	ID          pgtype.UUID `json:"id"`
+	UserID      pgtype.UUID `json:"user_id"`
+	Title       string      `json:"title"`
+	Description string      `json:"description"`
+	Status      string      `json:"status"`
 }
 
 func (q *Queries) UpdateTodoStatus(ctx context.Context, arg UpdateTodoStatusParams) error {
-	_, err := q.db.Exec(ctx, updateTodoStatus, arg.ID, arg.Status)
+	_, err := q.db.Exec(ctx, updateTodoStatus,
+		arg.ID,
+		arg.UserID,
+		arg.Title,
+		arg.Description,
+		arg.Status,
+	)
 	return err
 }

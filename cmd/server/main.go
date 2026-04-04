@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"connectrpc.com/grpcreflect"
-	"github.com/kassshi/golang-practice/gen/todo/v1/todov1connect"
-	"github.com/kassshi/golang-practice/gen/user/v1/userv1connect"
 	"github.com/kassshi/golang-practice/internal/config"
+	"github.com/kassshi/golang-practice/internal/gen/todo/v1/todov1connect"
+	"github.com/kassshi/golang-practice/internal/gen/user/v1/userv1connect"
 	"github.com/kassshi/golang-practice/internal/handler"
 	"github.com/kassshi/golang-practice/internal/infra/db"
 	"github.com/kassshi/golang-practice/internal/infra/db/sqlc"

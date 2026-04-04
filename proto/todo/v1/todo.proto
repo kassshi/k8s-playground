@@ -2,13 +2,67 @@ syntax = "proto3";
 
 package todo.v1;
 
-option go_package = "github.com/kassshi/golang-practice/gen/todo/v1;todov1";
+import "buf/validate/validate.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/field_mask.proto";
+
+option go_package = "github.com/kassshi/golang-practice/internal/gen/todo/v1;todov1";
 service TodoService {
-  rpc Ping(PingRequest) returns (PingResponse);
+  rpc CreateTodo(CreateTodoRequest) returns (Todo);
+  rpc GetTodo(GetTodoRequest) returns (Todo);
+  rpc UpdateTodo(UpdateTodoRequest) returns (Todo);
+  rpc DeleteTodo(DeleteTodoRequest) returns (google.protobuf.Empty);
+  rpc ListTodos(ListTodosRequest) returns (ListTodosResponse);
 }
 
-message PingRequest {}
+message Todo {
+  string name = 1;
+  string title = 2 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 100
+  }];
+  string description = 3 [(buf.validate.field).string.max_len = 500];
+  Status status = 4 [(buf.validate.field).enum = {
+    defined_only: true
+    not_in: [0]
+  }];
+  int64 created_at = 5;
+  int64 updated_at = 6;
+}
 
-message PingResponse {
-  string message = 1;
+enum Status {
+  STATUS_UNSPECIFIED = 0;
+  STATUS_TODO = 1;
+  STATUS_IN_PROGRESS = 2;
+  STATUS_DONE = 3;
+}
+
+message CreateTodoRequest {
+  Todo todo = 1 [(buf.validate.field).required = true];
+}
+
+message GetTodoRequest {
+  string name = 1 [(buf.validate.field).string.min_len = 1];
+}
+
+message UpdateTodoRequest {
+  Todo todo = 1 [(buf.validate.field).required = true];
+  google.protobuf.FieldMask update_mask = 2;
+}
+
+message DeleteTodoRequest {
+  string name = 1 [(buf.validate.field).string.min_len = 1];
+}
+
+message ListTodosRequest {
+  int32 page_size = 1 [(buf.validate.field).int32 = {
+    gt: 0
+    lte: 100
+  }];
+  string page_token = 2;
+}
+
+message ListTodosResponse {
+  repeated Todo todos = 1;
+  string next_page_token = 2;
 }
