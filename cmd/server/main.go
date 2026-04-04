@@ -8,16 +8,50 @@ import (
 
 	"connectrpc.com/grpcreflect"
 	"github.com/kassshi/golang-practice/gen/todo/v1/todov1connect"
+	"github.com/kassshi/golang-practice/gen/user/v1/userv1connect"
 	"github.com/kassshi/golang-practice/internal/config"
 	"github.com/kassshi/golang-practice/internal/handler"
 	"github.com/kassshi/golang-practice/internal/infra/db"
+	"github.com/kassshi/golang-practice/internal/infra/db/sqlc"
+	"github.com/kassshi/golang-practice/internal/repository"
 	"github.com/kassshi/golang-practice/internal/service"
 )
 
 func main() {
+
+	// Config
+	config, err := config.NewConfig()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Database
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	pool, err := db.NewPool(ctx, config.DataBaseUrl())
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer pool.Close()
+
+	// repository
+	queries := sqlc.New(pool)
+	userRepository := repository.NewUserRepository(queries)
+	todoRepository := repository.NewTodoRepository(queries)
+
+	// service
+	todoService := service.NewTodoService(todoRepository)
+	userService := service.NewUserService(userRepository)
+
+	// handler
+
 	mux := http.NewServeMux()
-	todoHandler := handler.NewTodoHandler(service.NewTodoService())
+	todoHandler := handler.NewTodoHandler(todoService)
+	userHandler := handler.NewUserHandler(userService)
 	path, h := todov1connect.NewTodoServiceHandler(todoHandler)
+	mux.Handle(path, h)
+	path, h = userv1connect.NewUserServiceHandler(userHandler)
 	mux.Handle(path, h)
 
 	// Reflection
@@ -33,21 +67,6 @@ func main() {
 		Handler:   mux,
 		Protocols: p,
 	}
-
-	// database
-	config, err := config.NewConfig()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	pool, err := db.NewPool(ctx, config.DataBaseUrl())
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer pool.Close()
 
 	if err := s.ListenAndServe(); err != nil {
 		log.Fatal(err)

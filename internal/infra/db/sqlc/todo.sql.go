@@ -3,7 +3,7 @@
 //   sqlc v1.30.0
 // source: todo.sql
 
-package db
+package sqlc
 
 import (
 	"context"
@@ -13,9 +13,9 @@ import (
 
 const createTodo = `-- name: CreateTodo :one
 INSERT INTO
-  todos (id, user_id, title, description)
+  todos (id, user_id, title, description, status)
 VALUES
-  ($1, $2, $3, $4)
+  ($1, $2, $3, $4, $5)
 RETURNING
   id, user_id, title, description, status, created_at, updated_at
 `
@@ -25,6 +25,7 @@ type CreateTodoParams struct {
 	UserID      pgtype.UUID `json:"user_id"`
 	Title       string      `json:"title"`
 	Description string      `json:"description"`
+	Status      string      `json:"status"`
 }
 
 func (q *Queries) CreateTodo(ctx context.Context, arg CreateTodoParams) (Todo, error) {
@@ -33,6 +34,7 @@ func (q *Queries) CreateTodo(ctx context.Context, arg CreateTodoParams) (Todo, e
 		arg.UserID,
 		arg.Title,
 		arg.Description,
+		arg.Status,
 	)
 	var i Todo
 	err := row.Scan(
@@ -58,7 +60,7 @@ func (q *Queries) DeleteTodo(ctx context.Context, id pgtype.UUID) error {
 	return err
 }
 
-const getTodoById = `-- name: GetTodoById :one
+const getTodoByID = `-- name: GetTodoByID :one
 SELECT
   id, user_id, title, description, status, created_at, updated_at
 FROM
@@ -69,8 +71,8 @@ LIMIT
   1
 `
 
-func (q *Queries) GetTodoById(ctx context.Context, id pgtype.UUID) (Todo, error) {
-	row := q.db.QueryRow(ctx, getTodoById, id)
+func (q *Queries) GetTodoByID(ctx context.Context, id pgtype.UUID) (Todo, error) {
+	row := q.db.QueryRow(ctx, getTodoByID, id)
 	var i Todo
 	err := row.Scan(
 		&i.ID,
@@ -84,7 +86,7 @@ func (q *Queries) GetTodoById(ctx context.Context, id pgtype.UUID) (Todo, error)
 	return i, err
 }
 
-const listTodosByUserId = `-- name: ListTodosByUserId :many
+const listTodosByUserID = `-- name: ListTodosByUserID :many
 SELECT
   id, user_id, title, description, status, created_at, updated_at
 FROM
@@ -95,8 +97,8 @@ ORDER BY
   created_at DESC
 `
 
-func (q *Queries) ListTodosByUserId(ctx context.Context, userID pgtype.UUID) ([]Todo, error) {
-	rows, err := q.db.Query(ctx, listTodosByUserId, userID)
+func (q *Queries) ListTodosByUserID(ctx context.Context, userID pgtype.UUID) ([]Todo, error) {
+	rows, err := q.db.Query(ctx, listTodosByUserID, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -123,29 +125,21 @@ func (q *Queries) ListTodosByUserId(ctx context.Context, userID pgtype.UUID) ([]
 	return items, nil
 }
 
-const updateTodo = `-- name: UpdateTodo :exec
+const updateTodoStatus = `-- name: UpdateTodoStatus :exec
 UPDATE todos
-set
-  user_id = $2,
-  title = $3,
-  description = $4
+SET
+  status = $2,
+  updated_at = NOW()
 WHERE
   id = $1
 `
 
-type UpdateTodoParams struct {
-	ID          pgtype.UUID `json:"id"`
-	UserID      pgtype.UUID `json:"user_id"`
-	Title       string      `json:"title"`
-	Description string      `json:"description"`
+type UpdateTodoStatusParams struct {
+	ID     pgtype.UUID `json:"id"`
+	Status string      `json:"status"`
 }
 
-func (q *Queries) UpdateTodo(ctx context.Context, arg UpdateTodoParams) error {
-	_, err := q.db.Exec(ctx, updateTodo,
-		arg.ID,
-		arg.UserID,
-		arg.Title,
-		arg.Description,
-	)
+func (q *Queries) UpdateTodoStatus(ctx context.Context, arg UpdateTodoStatusParams) error {
+	_, err := q.db.Exec(ctx, updateTodoStatus, arg.ID, arg.Status)
 	return err
 }

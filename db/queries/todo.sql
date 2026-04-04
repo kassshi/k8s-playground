@@ -1,4 +1,12 @@
--- name: GetTodoById :one
+-- name: CreateTodo :one
+INSERT INTO
+  todos (id, user_id, title, description, status)
+VALUES
+  ($1, $2, $3, $4, $5)
+RETURNING
+  *;
+
+-- name: GetTodoByID :one
 SELECT
   *
 FROM
@@ -8,7 +16,7 @@ WHERE
 LIMIT
   1;
 
--- name: ListTodosByUserId :many
+-- name: ListTodosByUserID :many
 SELECT
   *
 FROM
@@ -18,20 +26,11 @@ WHERE
 ORDER BY
   created_at DESC;
 
--- name: CreateTodo :one
-INSERT INTO
-  todos (id, user_id, title, description)
-VALUES
-  ($1, $2, $3, $4)
-RETURNING
-  *;
-
--- name: UpdateTodo :exec
+-- name: UpdateTodoStatus :exec
 UPDATE todos
-set
-  user_id = $2,
-  title = $3,
-  description = $4
+SET
+  status = $2,
+  updated_at = NOW()
 WHERE
   id = $1;
 
