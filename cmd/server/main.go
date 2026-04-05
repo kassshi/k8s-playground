@@ -8,6 +8,7 @@ import (
 
 	"connectrpc.com/grpcreflect"
 	"github.com/kassshi/golang-practice/internal/config"
+	"github.com/kassshi/golang-practice/internal/gen/auth/v1/authv1connect"
 	"github.com/kassshi/golang-practice/internal/gen/todo/v1/todov1connect"
 	"github.com/kassshi/golang-practice/internal/gen/user/v1/userv1connect"
 	"github.com/kassshi/golang-practice/internal/handler"
@@ -43,19 +44,23 @@ func main() {
 	// service
 	todoService := service.NewTodoService(todoRepository)
 	userService := service.NewUserService(userRepository)
+	authService := service.NewAuthService(userRepository)
 
 	// handler
 
 	mux := http.NewServeMux()
 	todoHandler := handler.NewTodoHandler(todoService)
 	userHandler := handler.NewUserHandler(userService)
+	oauthHandler := handler.NewAuthHandler(authService)
 	path, h := todov1connect.NewTodoServiceHandler(todoHandler)
 	mux.Handle(path, h)
 	path, h = userv1connect.NewUserServiceHandler(userHandler)
 	mux.Handle(path, h)
+	path, h = authv1connect.NewAuthServiceHandler(oauthHandler)
+	mux.Handle(path, h)
 
 	// Reflection
-	ref := grpcreflect.NewStaticReflector("todo.v1.TodoService")
+	ref := grpcreflect.NewStaticReflector("todo.v1.TodoService", "auth.v1.AuthService", "user.v1.UserService")
 	mux.Handle(grpcreflect.NewHandlerV1(ref))
 	mux.Handle(grpcreflect.NewHandlerV1Alpha(ref))
 
