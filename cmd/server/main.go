@@ -30,7 +30,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	pool, err := db.NewPool(ctx, config.DataBaseUrl())
+	pool, err := db.NewPool(ctx, config.DatabaseURL())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -44,7 +44,7 @@ func main() {
 	// service
 	todoService := service.NewTodoService(todoRepository)
 	userService := service.NewUserService(userRepository)
-	authService := service.NewAuthService(userRepository)
+	authService := service.NewAuthService(userRepository, config.JwtSecret)
 
 	// handler
 

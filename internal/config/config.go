@@ -13,6 +13,7 @@ type Config struct {
 	DatabaseName     string `envconfig:"DATABASE_NAME" required:"true"`
 	DatabaseHost     string `envconfig:"DATABASE_HOST" required:"true"`
 	DatabasePort     string `envconfig:"DATABASE_PORT" default:"5432"`
+	JwtSecret        string `envconfig:"jWT"`
 }
 
 func NewConfig() (*Config, error) {
@@ -24,6 +25,6 @@ func NewConfig() (*Config, error) {
 	return config, nil
 }
 
-func (c *Config) DataBaseUrl() string {
+func (c *Config) DatabaseURL() string {
 	return fmt.Sprintf("postgresql://%s:%s@%s:%s/%s", c.DatabaseUser, c.DatabasePassword, c.DatabaseHost, c.DatabasePort, c.DatabaseName)
 }
