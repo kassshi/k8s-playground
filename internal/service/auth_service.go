@@ -3,13 +3,13 @@ package service
 import (
 	"context"
 	"errors"
-	"time"
 
 	"connectrpc.com/connect"
-	"github.com/golang-jwt/jwt/v5"
+	"github.com/kassshi/golang-practice/internal/auth"
 	v1 "github.com/kassshi/golang-practice/internal/gen/auth/v1"
 	"github.com/kassshi/golang-practice/internal/infra/db/sqlc"
 	"github.com/kassshi/golang-practice/internal/repository"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -43,7 +43,11 @@ func (s *AuthService) Signup(ctx context.Context, req *connect.Request[v1.Signup
 		return nil, err
 	}
 
-	return connect.NewResponse(&v1.SignupResponse{AccessToken: s.generateAccessToken(user)}), nil
+	accessToken, err := auth.GenerateAccessToken(user.ID.String(), s.jwtSecret)
+	if err != nil {
+		return nil, err
+	}
+	return connect.NewResponse(&v1.SignupResponse{AccessToken: accessToken}), nil
 }
 
 func (s *AuthService) validateSignupRequest(req *v1.SignupRequest) error {
@@ -72,17 +76,9 @@ func (s *AuthService) Login(ctx context.Context, req *connect.Request[v1.LoginRe
 		return nil, errors.New("invalid email or password")
 	}
 
-	return connect.NewResponse(&v1.LoginResponse{AccessToken: s.generateAccessToken(user)}), err
-}
-
-func (s *AuthService) generateAccessToken(user sqlc.User) string {
-	claim := jwt.RegisteredClaims{
-		Subject:   user.ID.String(),
-		ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
-		IssuedAt:  jwt.NewNumericDate(time.Now()),
-		NotBefore: jwt.NewNumericDate(time.Now()),
+	accessToken, err := auth.GenerateAccessToken(user.ID.String(), s.jwtSecret)
+	if err != nil {
+		return nil, err
 	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
-	accessToken, _ := token.SignedString([]byte(s.jwtSecret))
-	return accessToken
+	return connect.NewResponse(&v1.LoginResponse{AccessToken: accessToken}), err
 }
