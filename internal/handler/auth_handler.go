@@ -21,5 +21,5 @@ func (h *AuthHandler) Signup(ctx context.Context, req *connect.Request[v1.Signup
 	return h.service.Signup(ctx, req)
 }
 func (h *AuthHandler) Login(ctx context.Context, req *connect.Request[v1.LoginRequest]) (*connect.Response[v1.LoginResponse], error) {
-	return nil, nil
+	return h.service.Login(ctx, req)
 }
