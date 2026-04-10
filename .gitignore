@@ -47,3 +47,4 @@ go.work
 
 .DS_Store
 .env
+.claude
