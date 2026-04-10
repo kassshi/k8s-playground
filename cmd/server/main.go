@@ -14,6 +14,7 @@ import (
 	"github.com/kassshi/golang-practice/internal/handler"
 	"github.com/kassshi/golang-practice/internal/infra/db"
 	"github.com/kassshi/golang-practice/internal/infra/db/sqlc"
+	"github.com/kassshi/golang-practice/internal/middleware"
 	"github.com/kassshi/golang-practice/internal/repository"
 	"github.com/kassshi/golang-practice/internal/service"
 )
@@ -53,7 +54,7 @@ func main() {
 	userHandler := handler.NewUserHandler(userService)
 	oauthHandler := handler.NewAuthHandler(authService)
 	path, h := todov1connect.NewTodoServiceHandler(todoHandler)
-	mux.Handle(path, h)
+	mux.Handle(path, middleware.AuthMiddleware(config.JwtSecret)(h))
 	path, h = userv1connect.NewUserServiceHandler(userHandler)
 	mux.Handle(path, h)
 	path, h = authv1connect.NewAuthServiceHandler(oauthHandler)
