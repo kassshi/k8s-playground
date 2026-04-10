@@ -10,11 +10,9 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 	v1 "github.com/kassshi/golang-practice/internal/gen/todo/v1"
 	"github.com/kassshi/golang-practice/internal/infra/db/sqlc"
+	"github.com/kassshi/golang-practice/internal/middleware"
 	"github.com/kassshi/golang-practice/internal/repository"
 )
-
-// TODO: 認証実装後にログインユーザーのIDに差し替える
-var tempUserID = pgtype.UUID{Bytes: uuid.MustParse("00000000-0000-0000-0000-000000000001"), Valid: true}
 
 type TodoService struct {
 	repository *repository.TodoRepository
@@ -29,9 +27,13 @@ func NewTodoService(repository *repository.TodoRepository) *TodoService {
 func (s *TodoService) CreateTodo(ctx context.Context, req *connect.Request[v1.CreateTodoRequest]) (sqlc.Todo, error) {
 	todo := req.Msg.GetTodo()
 	id := uuid.New()
+	userID, err := getUserIDFromcontext(ctx)
+	if err != nil {
+		return sqlc.Todo{}, fmt.Errorf("failed to get user id from context: %w", err)
+	}
 	args := sqlc.CreateTodoParams{
 		ID:          pgtype.UUID{Bytes: id, Valid: true},
-		UserID:      tempUserID,
+		UserID:      userID,
 		Title:       todo.GetTitle(),
 		Description: todo.GetDescription(),
 		Status:      toDBStatus(todo.GetStatus()),
@@ -44,9 +46,13 @@ func (s *TodoService) GetTodoByID(ctx context.Context, req *connect.Request[v1.G
 	if err != nil {
 		return sqlc.Todo{}, fmt.Errorf("invalid uuid: %w", err)
 	}
+	userID, err := getUserIDFromcontext(ctx)
+	if err != nil {
+		return sqlc.Todo{}, err
+	}
 	args := sqlc.GetTodoByIDParams{
 		ID:     pgtype.UUID{Bytes: id, Valid: true},
-		UserID: tempUserID,
+		UserID: userID,
 	}
 	return s.repository.GetTodoByID(ctx, args)
 }
@@ -57,9 +63,13 @@ func (s *TodoService) UpdateTodoStatus(ctx context.Context, req *connect.Request
 	if err != nil {
 		return fmt.Errorf("invalid uuid: %w", err)
 	}
+	userID, err := getUserIDFromcontext(ctx)
+	if err != nil {
+		return err
+	}
 	args := sqlc.UpdateTodoStatusParams{
 		ID:          pgtype.UUID{Bytes: id, Valid: true},
-		UserID:      tempUserID,
+		UserID:      userID,
 		Title:       todo.GetTitle(),
 		Description: todo.GetDescription(),
 		Status:      toDBStatus(todo.GetStatus()),
@@ -72,15 +82,23 @@ func (s *TodoService) DeleteTodo(ctx context.Context, req *connect.Request[v1.De
 	if err != nil {
 		return fmt.Errorf("invalid uuid: %w", err)
 	}
+	userID, err := getUserIDFromcontext(ctx)
+	if err != nil {
+		return err
+	}
 	args := sqlc.DeleteTodoParams{
 		ID:     pgtype.UUID{Bytes: id, Valid: true},
-		UserID: tempUserID,
+		UserID: userID,
 	}
 	return s.repository.DeleteTodo(ctx, args)
 }
 
 func (s *TodoService) ListTodosByUserID(ctx context.Context) ([]sqlc.Todo, error) {
-	return s.repository.ListTodosByUserID(ctx, tempUserID)
+	userID, err := getUserIDFromcontext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return s.repository.ListTodosByUserID(ctx, userID)
 }
 
 func toDBStatus(s v1.Status) string {
@@ -96,3 +114,11 @@ func toDBStatus(s v1.Status) string {
 	}
 }
 
+func getUserIDFromcontext(ctx context.Context) (pgtype.UUID, error) {
+	userIDStr := ctx.Value(middleware.UserIDKey).(string)
+	id, err := uuid.Parse(userIDStr)
+	if err != nil {
+		return pgtype.UUID{}, fmt.Errorf("invalid uuid: %w", err)
+	}
+	return pgtype.UUID{Bytes: id, Valid: true}, nil
+}
