@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package user.v1;
 
-option go_package = "github.com/kassshi/golang-practice/internal/gen/user/v1;userv1";
+option go_package = "github.com/kassshi/golang-practice/backend/internal/gen/user/v1;userv1";
 
 service UserService {
   rpc Ping(PingRequest) returns (PingResponse);

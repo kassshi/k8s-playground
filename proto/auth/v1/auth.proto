@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package auth.v1;
 
-option go_package = "github.com/kassshi/golang-practice/internal/gen/auth/v1;authv1";
+option go_package = "github.com/kassshi/golang-practice/backend/internal/gen/auth/v1;authv1";
 service AuthService {
   rpc Signup(SignupRequest) returns (SignupResponse);
   rpc Login(LoginRequest) returns (LoginResponse);
