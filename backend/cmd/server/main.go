@@ -19,6 +19,7 @@ import (
 	"github.com/kassshi/golang-practice/backend/internal/middleware"
 	"github.com/kassshi/golang-practice/backend/internal/repository"
 	"github.com/kassshi/golang-practice/backend/internal/service"
+	"github.com/rs/cors"
 )
 
 func main() {
@@ -52,6 +53,12 @@ func main() {
 	// handler
 	// Create the validation interceptor provided by connectrpc.com/validate.
 	validateInterceptor := validate.NewInterceptor()
+	cors := cors.New(cors.Options{
+		AllowedOrigins: []string{"http://localhost:5173"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE"},
+		AllowedHeaders: []string{"Authorization", "Content-Type",
+			"Connect-Protocol-Version"},
+	})
 	mux := http.NewServeMux()
 	todoHandler := handler.NewTodoHandler(todoService)
 	userHandler := handler.NewUserHandler(userService)
@@ -73,7 +80,7 @@ func main() {
 	p.SetUnencryptedHTTP2(true)
 	s := http.Server{
 		Addr:      ":8080",
-		Handler:   mux,
+		Handler:   cors.Handler(mux),
 		Protocols: p,
 	}
 
