@@ -6,7 +6,9 @@ import (
 	"net/http"
 	"time"
 
+	"connectrpc.com/connect"
 	"connectrpc.com/grpcreflect"
+	"connectrpc.com/validate"
 	"github.com/kassshi/golang-practice/internal/config"
 	"github.com/kassshi/golang-practice/internal/gen/auth/v1/authv1connect"
 	"github.com/kassshi/golang-practice/internal/gen/todo/v1/todov1connect"
@@ -48,12 +50,13 @@ func main() {
 	authService := service.NewAuthService(userRepository, config.JwtSecret)
 
 	// handler
-
+	// Create the validation interceptor provided by connectrpc.com/validate.
+	validateInterceptor := validate.NewInterceptor()
 	mux := http.NewServeMux()
 	todoHandler := handler.NewTodoHandler(todoService)
 	userHandler := handler.NewUserHandler(userService)
 	oauthHandler := handler.NewAuthHandler(authService)
-	path, h := todov1connect.NewTodoServiceHandler(todoHandler)
+	path, h := todov1connect.NewTodoServiceHandler(todoHandler, connect.WithInterceptors(validateInterceptor))
 	mux.Handle(path, middleware.AuthMiddleware(config.JwtSecret)(h))
 	path, h = userv1connect.NewUserServiceHandler(userHandler)
 	mux.Handle(path, h)

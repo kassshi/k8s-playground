@@ -5,5 +5,4 @@ plugins:
     opt: paths=source_relative
   - local: [go, tool, protoc-gen-connect-go]
     out: internal/gen
-    opt:
-      - paths=source_relative
+    opt: paths=source_relative

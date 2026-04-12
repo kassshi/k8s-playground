@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 
+	"buf.build/go/protovalidate"
 	"connectrpc.com/connect"
 	"github.com/google/uuid"
 	v1 "github.com/kassshi/golang-practice/internal/gen/todo/v1"
@@ -21,6 +22,9 @@ func NewTodoHandler(service *service.TodoService) todov1connect.TodoServiceHandl
 }
 
 func (h *TodoHandler) CreateTodo(ctx context.Context, req *connect.Request[v1.CreateTodoRequest]) (*connect.Response[v1.Todo], error) {
+	if err := protovalidate.Validate(req.Msg); err != nil {
+		return nil, err
+	}
 	result, err := h.service.CreateTodo(ctx, req)
 	if err != nil {
 		return nil, err
@@ -28,6 +32,10 @@ func (h *TodoHandler) CreateTodo(ctx context.Context, req *connect.Request[v1.Cr
 	return connect.NewResponse(toProtoTodo(result)), nil
 }
 func (h *TodoHandler) GetTodo(ctx context.Context, req *connect.Request[v1.GetTodoRequest]) (*connect.Response[v1.Todo], error) {
+	if err := protovalidate.Validate(req.Msg); err != nil {
+		return nil, err
+	}
+
 	result, err := h.service.GetTodoByID(ctx, req)
 	if err != nil {
 		return nil, err
@@ -36,6 +44,10 @@ func (h *TodoHandler) GetTodo(ctx context.Context, req *connect.Request[v1.GetTo
 }
 
 func (h *TodoHandler) UpdateTodo(ctx context.Context, req *connect.Request[v1.UpdateTodoRequest]) (*connect.Response[v1.Todo], error) {
+	if err := protovalidate.Validate(req.Msg); err != nil {
+		return nil, err
+	}
+
 	if err := h.service.UpdateTodoStatus(ctx, req); err != nil {
 		return nil, err
 	}
@@ -43,12 +55,20 @@ func (h *TodoHandler) UpdateTodo(ctx context.Context, req *connect.Request[v1.Up
 }
 
 func (h *TodoHandler) DeleteTodo(ctx context.Context, req *connect.Request[v1.DeleteTodoRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := protovalidate.Validate(req.Msg); err != nil {
+		return nil, err
+	}
+
 	if err := h.service.DeleteTodo(ctx, req); err != nil {
 		return nil, err
 	}
 	return connect.NewResponse(&emptypb.Empty{}), nil
 }
 func (h *TodoHandler) ListTodos(ctx context.Context, req *connect.Request[v1.ListTodosRequest]) (*connect.Response[v1.ListTodosResponse], error) {
+	if err := protovalidate.Validate(req.Msg); err != nil {
+		return nil, err
+	}
+
 	result, err := h.service.ListTodosByUserID(ctx)
 	if err != nil {
 		return nil, err
