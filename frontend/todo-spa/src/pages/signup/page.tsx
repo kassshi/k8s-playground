@@ -1,4 +1,6 @@
+import { ConnectError } from "@connectrpc/connect";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
 import { signup } from "../../features/auth/api/signup";
 
 type SignupFormValues = {
@@ -9,14 +11,21 @@ type SignupFormValues = {
 
 export function SignupPage() {
   const { register, handleSubmit } = useForm<SignupFormValues>();
-
+  const navigator = useNavigate();
   const onSubmit = async (data: SignupFormValues) => {
-    const result = await signup(
-      data.email,
-      data.password,
-      data.confirm_password,
-    );
-    console.log(result);
+    try {
+      const result = await signup(
+        data.email,
+        data.password,
+        data.confirm_password,
+      );
+      localStorage.setItem("token", result.accessToken);
+      navigator("/todos");
+    } catch (error) {
+      if (error instanceof ConnectError) {
+        console.log("Signup failed:", error.message);
+      }
+    }
   };
   return (
     <div>
