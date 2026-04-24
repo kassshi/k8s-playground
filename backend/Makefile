@@ -4,6 +4,8 @@ DB_URL=postgres://$(DB_USER):$(DB_PASSWORD)@localhost:5432/$(DB_NAME)?sslmode=di
 
 run:
 	go run cmd/server/main.go
+dev:
+	air
 migrate-up:
 	migrate -path db/migrations -database "$(DB_URL)" up
 migrate-down:
