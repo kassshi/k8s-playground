@@ -7,5 +7,6 @@ plugins:
     out: ../backend/internal/gen
     opt: paths=source_relative
   - remote: buf.build/bufbuild/es:v2.6.1
-    out: ../frontend/todo-spa/src/gen
+    out: ../frontend/src/gen
     opt: target=ts
+    include_imports: true
