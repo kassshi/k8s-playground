@@ -64,7 +64,7 @@ func (h *TodoHandler) DeleteTodo(ctx context.Context, req *connect.Request[v1.De
 	}
 	return connect.NewResponse(&emptypb.Empty{}), nil
 }
-func (h *TodoHandler) ListTodos(ctx context.Context, req *connect.Request[v1.ListTodosRequest]) (*connect.Response[v1.ListTodosResponse], error) {
+func (h *TodoHandler) ListTodos(ctx context.Context, req *connect.Request[emptypb.Empty]) (*connect.Response[v1.ListTodosResponse], error) {
 	if err := protovalidate.Validate(req.Msg); err != nil {
 		return nil, err
 	}

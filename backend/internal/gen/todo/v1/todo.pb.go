@@ -344,69 +344,16 @@ func (x *DeleteTodoRequest) GetName() string {
 	return ""
 }
 
-type ListTodosRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	PageSize      int32                  `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
-	PageToken     string                 `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ListTodosRequest) Reset() {
-	*x = ListTodosRequest{}
-	mi := &file_todo_v1_todo_proto_msgTypes[5]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ListTodosRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ListTodosRequest) ProtoMessage() {}
-
-func (x *ListTodosRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_todo_v1_todo_proto_msgTypes[5]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ListTodosRequest.ProtoReflect.Descriptor instead.
-func (*ListTodosRequest) Descriptor() ([]byte, []int) {
-	return file_todo_v1_todo_proto_rawDescGZIP(), []int{5}
-}
-
-func (x *ListTodosRequest) GetPageSize() int32 {
-	if x != nil {
-		return x.PageSize
-	}
-	return 0
-}
-
-func (x *ListTodosRequest) GetPageToken() string {
-	if x != nil {
-		return x.PageToken
-	}
-	return ""
-}
-
 type ListTodosResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Todos         []*Todo                `protobuf:"bytes,1,rep,name=todos,proto3" json:"todos,omitempty"`
-	NextPageToken string                 `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ListTodosResponse) Reset() {
 	*x = ListTodosResponse{}
-	mi := &file_todo_v1_todo_proto_msgTypes[6]
+	mi := &file_todo_v1_todo_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -418,7 +365,7 @@ func (x *ListTodosResponse) String() string {
 func (*ListTodosResponse) ProtoMessage() {}
 
 func (x *ListTodosResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_todo_v1_todo_proto_msgTypes[6]
+	mi := &file_todo_v1_todo_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -431,7 +378,7 @@ func (x *ListTodosResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTodosResponse.ProtoReflect.Descriptor instead.
 func (*ListTodosResponse) Descriptor() ([]byte, []int) {
-	return file_todo_v1_todo_proto_rawDescGZIP(), []int{6}
+	return file_todo_v1_todo_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *ListTodosResponse) GetTodos() []*Todo {
@@ -439,13 +386,6 @@ func (x *ListTodosResponse) GetTodos() []*Todo {
 		return x.Todos
 	}
 	return nil
-}
-
-func (x *ListTodosResponse) GetNextPageToken() string {
-	if x != nil {
-		return x.NextPageToken
-	}
-	return ""
 }
 
 var File_todo_v1_todo_proto protoreflect.FileDescriptor
@@ -472,19 +412,14 @@ const file_todo_v1_todo_proto_rawDesc = "" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskR\n" +
 	"updateMask\"0\n" +
 	"\x11DeleteTodoRequest\x12\x1b\n" +
-	"\x04name\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x04name\"Y\n" +
-	"\x10ListTodosRequest\x12&\n" +
-	"\tpage_size\x18\x01 \x01(\x05B\t\xbaH\x06\x1a\x04\x18d \x00R\bpageSize\x12\x1d\n" +
-	"\n" +
-	"page_token\x18\x02 \x01(\tR\tpageToken\"`\n" +
+	"\x04name\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x04name\"8\n" +
 	"\x11ListTodosResponse\x12#\n" +
-	"\x05todos\x18\x01 \x03(\v2\r.todo.v1.TodoR\x05todos\x12&\n" +
-	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken*Z\n" +
+	"\x05todos\x18\x01 \x03(\v2\r.todo.v1.TodoR\x05todos*Z\n" +
 	"\x06Status\x12\x16\n" +
 	"\x12STATUS_UNSPECIFIED\x10\x00\x12\x0f\n" +
 	"\vSTATUS_TODO\x10\x01\x12\x16\n" +
 	"\x12STATUS_IN_PROGRESS\x10\x02\x12\x0f\n" +
-	"\vSTATUS_DONE\x10\x032\xb8\x02\n" +
+	"\vSTATUS_DONE\x10\x032\xb5\x02\n" +
 	"\vTodoService\x127\n" +
 	"\n" +
 	"CreateTodo\x12\x1a.todo.v1.CreateTodoRequest\x1a\r.todo.v1.Todo\x121\n" +
@@ -492,8 +427,8 @@ const file_todo_v1_todo_proto_rawDesc = "" +
 	"\n" +
 	"UpdateTodo\x12\x1a.todo.v1.UpdateTodoRequest\x1a\r.todo.v1.Todo\x12@\n" +
 	"\n" +
-	"DeleteTodo\x12\x1a.todo.v1.DeleteTodoRequest\x1a\x16.google.protobuf.Empty\x12B\n" +
-	"\tListTodos\x12\x19.todo.v1.ListTodosRequest\x1a\x1a.todo.v1.ListTodosResponseBHZFgithub.com/kassshi/golang-practice/backend/internal/gen/todo/v1;todov1b\x06proto3"
+	"DeleteTodo\x12\x1a.todo.v1.DeleteTodoRequest\x1a\x16.google.protobuf.Empty\x12?\n" +
+	"\tListTodos\x12\x16.google.protobuf.Empty\x1a\x1a.todo.v1.ListTodosResponseBHZFgithub.com/kassshi/golang-practice/backend/internal/gen/todo/v1;todov1b\x06proto3"
 
 var (
 	file_todo_v1_todo_proto_rawDescOnce sync.Once
@@ -508,7 +443,7 @@ func file_todo_v1_todo_proto_rawDescGZIP() []byte {
 }
 
 var file_todo_v1_todo_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_todo_v1_todo_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_todo_v1_todo_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_todo_v1_todo_proto_goTypes = []any{
 	(Status)(0),                   // 0: todo.v1.Status
 	(*Todo)(nil),                  // 1: todo.v1.Todo
@@ -516,27 +451,26 @@ var file_todo_v1_todo_proto_goTypes = []any{
 	(*GetTodoRequest)(nil),        // 3: todo.v1.GetTodoRequest
 	(*UpdateTodoRequest)(nil),     // 4: todo.v1.UpdateTodoRequest
 	(*DeleteTodoRequest)(nil),     // 5: todo.v1.DeleteTodoRequest
-	(*ListTodosRequest)(nil),      // 6: todo.v1.ListTodosRequest
-	(*ListTodosResponse)(nil),     // 7: todo.v1.ListTodosResponse
-	(*fieldmaskpb.FieldMask)(nil), // 8: google.protobuf.FieldMask
-	(*emptypb.Empty)(nil),         // 9: google.protobuf.Empty
+	(*ListTodosResponse)(nil),     // 6: todo.v1.ListTodosResponse
+	(*fieldmaskpb.FieldMask)(nil), // 7: google.protobuf.FieldMask
+	(*emptypb.Empty)(nil),         // 8: google.protobuf.Empty
 }
 var file_todo_v1_todo_proto_depIdxs = []int32{
 	0,  // 0: todo.v1.Todo.status:type_name -> todo.v1.Status
 	1,  // 1: todo.v1.CreateTodoRequest.todo:type_name -> todo.v1.Todo
 	1,  // 2: todo.v1.UpdateTodoRequest.todo:type_name -> todo.v1.Todo
-	8,  // 3: todo.v1.UpdateTodoRequest.update_mask:type_name -> google.protobuf.FieldMask
+	7,  // 3: todo.v1.UpdateTodoRequest.update_mask:type_name -> google.protobuf.FieldMask
 	1,  // 4: todo.v1.ListTodosResponse.todos:type_name -> todo.v1.Todo
 	2,  // 5: todo.v1.TodoService.CreateTodo:input_type -> todo.v1.CreateTodoRequest
 	3,  // 6: todo.v1.TodoService.GetTodo:input_type -> todo.v1.GetTodoRequest
 	4,  // 7: todo.v1.TodoService.UpdateTodo:input_type -> todo.v1.UpdateTodoRequest
 	5,  // 8: todo.v1.TodoService.DeleteTodo:input_type -> todo.v1.DeleteTodoRequest
-	6,  // 9: todo.v1.TodoService.ListTodos:input_type -> todo.v1.ListTodosRequest
+	8,  // 9: todo.v1.TodoService.ListTodos:input_type -> google.protobuf.Empty
 	1,  // 10: todo.v1.TodoService.CreateTodo:output_type -> todo.v1.Todo
 	1,  // 11: todo.v1.TodoService.GetTodo:output_type -> todo.v1.Todo
 	1,  // 12: todo.v1.TodoService.UpdateTodo:output_type -> todo.v1.Todo
-	9,  // 13: todo.v1.TodoService.DeleteTodo:output_type -> google.protobuf.Empty
-	7,  // 14: todo.v1.TodoService.ListTodos:output_type -> todo.v1.ListTodosResponse
+	8,  // 13: todo.v1.TodoService.DeleteTodo:output_type -> google.protobuf.Empty
+	6,  // 14: todo.v1.TodoService.ListTodos:output_type -> todo.v1.ListTodosResponse
 	10, // [10:15] is the sub-list for method output_type
 	5,  // [5:10] is the sub-list for method input_type
 	5,  // [5:5] is the sub-list for extension type_name
@@ -555,7 +489,7 @@ func file_todo_v1_todo_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_todo_v1_todo_proto_rawDesc), len(file_todo_v1_todo_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   7,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -13,7 +13,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file todo/v1/todo.proto.
  */
 export const file_todo_v1_todo: GenFile = /*@__PURE__*/
-  fileDesc("ChJ0b2RvL3YxL3RvZG8ucHJvdG8SB3RvZG8udjEiogEKBFRvZG8SDAoEbmFtZRgBIAEoCRIYCgV0aXRsZRgCIAEoCUIJukgGcgQQARhkEh0KC2Rlc2NyaXB0aW9uGAMgASgJQgi6SAVyAxj0AxIrCgZzdGF0dXMYBCABKA4yDy50b2RvLnYxLlN0YXR1c0IKukgHggEEEAEgABISCgpjcmVhdGVkX2F0GAUgASgDEhIKCnVwZGF0ZWRfYXQYBiABKAMiOAoRQ3JlYXRlVG9kb1JlcXVlc3QSIwoEdG9kbxgBIAEoCzINLnRvZG8udjEuVG9kb0IGukgDyAEBIicKDkdldFRvZG9SZXF1ZXN0EhUKBG5hbWUYASABKAlCB7pIBHICEAEiaQoRVXBkYXRlVG9kb1JlcXVlc3QSIwoEdG9kbxgBIAEoCzINLnRvZG8udjEuVG9kb0IGukgDyAEBEi8KC3VwZGF0ZV9tYXNrGAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLkZpZWxkTWFzayIqChFEZWxldGVUb2RvUmVxdWVzdBIVCgRuYW1lGAEgASgJQge6SARyAhABIkQKEExpc3RUb2Rvc1JlcXVlc3QSHAoJcGFnZV9zaXplGAEgASgFQgm6SAYaBBhkIAASEgoKcGFnZV90b2tlbhgCIAEoCSJKChFMaXN0VG9kb3NSZXNwb25zZRIcCgV0b2RvcxgBIAMoCzINLnRvZG8udjEuVG9kbxIXCg9uZXh0X3BhZ2VfdG9rZW4YAiABKAkqWgoGU3RhdHVzEhYKElNUQVRVU19VTlNQRUNJRklFRBAAEg8KC1NUQVRVU19UT0RPEAESFgoSU1RBVFVTX0lOX1BST0dSRVNTEAISDwoLU1RBVFVTX0RPTkUQAzK4AgoLVG9kb1NlcnZpY2USNwoKQ3JlYXRlVG9kbxIaLnRvZG8udjEuQ3JlYXRlVG9kb1JlcXVlc3QaDS50b2RvLnYxLlRvZG8SMQoHR2V0VG9kbxIXLnRvZG8udjEuR2V0VG9kb1JlcXVlc3QaDS50b2RvLnYxLlRvZG8SNwoKVXBkYXRlVG9kbxIaLnRvZG8udjEuVXBkYXRlVG9kb1JlcXVlc3QaDS50b2RvLnYxLlRvZG8SQAoKRGVsZXRlVG9kbxIaLnRvZG8udjEuRGVsZXRlVG9kb1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSQgoJTGlzdFRvZG9zEhkudG9kby52MS5MaXN0VG9kb3NSZXF1ZXN0GhoudG9kby52MS5MaXN0VG9kb3NSZXNwb25zZUJIWkZnaXRodWIuY29tL2thc3NzaGkvZ29sYW5nLXByYWN0aWNlL2JhY2tlbmQvaW50ZXJuYWwvZ2VuL3RvZG8vdjE7dG9kb3YxYgZwcm90bzM", [file_buf_validate_validate, file_google_protobuf_empty, file_google_protobuf_field_mask]);
+  fileDesc("ChJ0b2RvL3YxL3RvZG8ucHJvdG8SB3RvZG8udjEiogEKBFRvZG8SDAoEbmFtZRgBIAEoCRIYCgV0aXRsZRgCIAEoCUIJukgGcgQQARhkEh0KC2Rlc2NyaXB0aW9uGAMgASgJQgi6SAVyAxj0AxIrCgZzdGF0dXMYBCABKA4yDy50b2RvLnYxLlN0YXR1c0IKukgHggEEEAEgABISCgpjcmVhdGVkX2F0GAUgASgDEhIKCnVwZGF0ZWRfYXQYBiABKAMiOAoRQ3JlYXRlVG9kb1JlcXVlc3QSIwoEdG9kbxgBIAEoCzINLnRvZG8udjEuVG9kb0IGukgDyAEBIicKDkdldFRvZG9SZXF1ZXN0EhUKBG5hbWUYASABKAlCB7pIBHICEAEiaQoRVXBkYXRlVG9kb1JlcXVlc3QSIwoEdG9kbxgBIAEoCzINLnRvZG8udjEuVG9kb0IGukgDyAEBEi8KC3VwZGF0ZV9tYXNrGAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLkZpZWxkTWFzayIqChFEZWxldGVUb2RvUmVxdWVzdBIVCgRuYW1lGAEgASgJQge6SARyAhABIjEKEUxpc3RUb2Rvc1Jlc3BvbnNlEhwKBXRvZG9zGAEgAygLMg0udG9kby52MS5Ub2RvKloKBlN0YXR1cxIWChJTVEFUVVNfVU5TUEVDSUZJRUQQABIPCgtTVEFUVVNfVE9ETxABEhYKElNUQVRVU19JTl9QUk9HUkVTUxACEg8KC1NUQVRVU19ET05FEAMytQIKC1RvZG9TZXJ2aWNlEjcKCkNyZWF0ZVRvZG8SGi50b2RvLnYxLkNyZWF0ZVRvZG9SZXF1ZXN0Gg0udG9kby52MS5Ub2RvEjEKB0dldFRvZG8SFy50b2RvLnYxLkdldFRvZG9SZXF1ZXN0Gg0udG9kby52MS5Ub2RvEjcKClVwZGF0ZVRvZG8SGi50b2RvLnYxLlVwZGF0ZVRvZG9SZXF1ZXN0Gg0udG9kby52MS5Ub2RvEkAKCkRlbGV0ZVRvZG8SGi50b2RvLnYxLkRlbGV0ZVRvZG9SZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5Ej8KCUxpc3RUb2RvcxIWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRoaLnRvZG8udjEuTGlzdFRvZG9zUmVzcG9uc2VCSFpGZ2l0aHViLmNvbS9rYXNzc2hpL2dvbGFuZy1wcmFjdGljZS9iYWNrZW5kL2ludGVybmFsL2dlbi90b2RvL3YxO3RvZG92MWIGcHJvdG8z", [file_buf_validate_validate, file_google_protobuf_empty, file_google_protobuf_field_mask]);
 
 /**
  * @generated from message todo.v1.Todo
@@ -131,28 +131,6 @@ export const DeleteTodoRequestSchema: GenMessage<DeleteTodoRequest> = /*@__PURE_
   messageDesc(file_todo_v1_todo, 4);
 
 /**
- * @generated from message todo.v1.ListTodosRequest
- */
-export type ListTodosRequest = Message<"todo.v1.ListTodosRequest"> & {
-  /**
-   * @generated from field: int32 page_size = 1;
-   */
-  pageSize: number;
-
-  /**
-   * @generated from field: string page_token = 2;
-   */
-  pageToken: string;
-};
-
-/**
- * Describes the message todo.v1.ListTodosRequest.
- * Use `create(ListTodosRequestSchema)` to create a new message.
- */
-export const ListTodosRequestSchema: GenMessage<ListTodosRequest> = /*@__PURE__*/
-  messageDesc(file_todo_v1_todo, 5);
-
-/**
  * @generated from message todo.v1.ListTodosResponse
  */
 export type ListTodosResponse = Message<"todo.v1.ListTodosResponse"> & {
@@ -160,11 +138,6 @@ export type ListTodosResponse = Message<"todo.v1.ListTodosResponse"> & {
    * @generated from field: repeated todo.v1.Todo todos = 1;
    */
   todos: Todo[];
-
-  /**
-   * @generated from field: string next_page_token = 2;
-   */
-  nextPageToken: string;
 };
 
 /**
@@ -172,7 +145,7 @@ export type ListTodosResponse = Message<"todo.v1.ListTodosResponse"> & {
  * Use `create(ListTodosResponseSchema)` to create a new message.
  */
 export const ListTodosResponseSchema: GenMessage<ListTodosResponse> = /*@__PURE__*/
-  messageDesc(file_todo_v1_todo, 6);
+  messageDesc(file_todo_v1_todo, 5);
 
 /**
  * @generated from enum todo.v1.Status
@@ -246,7 +219,7 @@ export const TodoService: GenService<{
    */
   listTodos: {
     methodKind: "unary";
-    input: typeof ListTodosRequestSchema;
+    input: typeof EmptySchema;
     output: typeof ListTodosResponseSchema;
   },
 }> = /*@__PURE__*/

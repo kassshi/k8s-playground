@@ -12,7 +12,7 @@ service TodoService {
   rpc GetTodo(GetTodoRequest) returns (Todo);
   rpc UpdateTodo(UpdateTodoRequest) returns (Todo);
   rpc DeleteTodo(DeleteTodoRequest) returns (google.protobuf.Empty);
-  rpc ListTodos(ListTodosRequest) returns (ListTodosResponse);
+  rpc ListTodos(google.protobuf.Empty) returns (ListTodosResponse);
 }
 
 message Todo {
@@ -54,15 +54,6 @@ message DeleteTodoRequest {
   string name = 1 [(buf.validate.field).string.min_len = 1];
 }
 
-message ListTodosRequest {
-  int32 page_size = 1 [(buf.validate.field).int32 = {
-    gt: 0
-    lte: 100
-  }];
-  string page_token = 2;
-}
-
 message ListTodosResponse {
   repeated Todo todos = 1;
-  string next_page_token = 2;
 }
