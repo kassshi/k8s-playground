@@ -17,6 +17,7 @@ const authErrorInterceptor: Interceptor = (next) => async (req) => {
     if (error instanceof ConnectError && error.code == Code.Unauthenticated) {
       window.location.href = "/login";
     }
+    throw error;
   }
 };
 
