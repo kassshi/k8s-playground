@@ -2,6 +2,9 @@ import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ConnectError } from "@connectrpc/connect";
+import { useState } from "react";
+
+import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { Button } from "../../../components/ui/button";
 import {
@@ -20,10 +23,15 @@ type CreateTodoFormValues = {
   decription: string;
 };
 export function CreateTodoModal() {
-  const { register, handleSubmit } = useForm<CreateTodoFormValues>();
+  const { register, handleSubmit, reset } = useForm<CreateTodoFormValues>();
+  const queryClient = useQueryClient();
+  const [open, setOpen] = useState(false);
   const onSubmit = async (data: CreateTodoFormValues) => {
     try {
       await CreateTodo(data.title, data.decription);
+      await queryClient.invalidateQueries({ queryKey: ["todos"] });
+      reset();
+      setOpen(false);
     } catch (error) {
       if (error instanceof ConnectError) {
         console.log("Create todo failed:", error.message);
@@ -31,7 +39,7 @@ export function CreateTodoModal() {
     }
   };
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline">Create Todo</Button>
       </DialogTrigger>
