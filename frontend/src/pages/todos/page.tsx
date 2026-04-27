@@ -1,3 +1,4 @@
+import { TodoItem } from "@/features/todo/components/todoItem";
 import { useQuery } from "@tanstack/react-query";
 import { ListTodos } from "../../features/todo/api/todos";
 import { CreateTodoModal } from "../../features/todo/components/createTodoModal";
@@ -19,11 +20,9 @@ export function TodosPage() {
   return (
     <div>
       <CreateTodoModal />
-      <ul>
-        {data.todos.map((todo: Todo) => (
-          <li key={todo.name}>{todo.title}</li>
-        ))}
-      </ul>
+      {data.todos.map((todo: Todo) => (
+        <TodoItem todo={todo} />
+      ))}
     </div>
   );
 }
