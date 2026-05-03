@@ -1,5 +1,5 @@
 import { createClient } from "@connectrpc/connect";
-import { Status, TodoService } from "../../../gen/todo/v1/todo_pb";
+import { Status, TodoService, type Todo } from "../../../gen/todo/v1/todo_pb";
 import { transport } from "../../../shared/lib/connect";
 const client = createClient(TodoService, transport);
 
@@ -15,4 +15,19 @@ export async function CreateTodo(title: string, description: string) {
       status: Status.TODO,
     },
   });
+}
+
+export async function UpdateTodo(todo: Todo) {
+  return await client.updateTodo({
+    todo: {
+      name: todo.name,
+      title: todo.title,
+      description: todo.description,
+      status: todo.status,
+    },
+  });
+}
+
+export async function DeleteTodo(name: string) {
+  return await client.deleteTodo({ name });
 }
