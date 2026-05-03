@@ -5,6 +5,7 @@ import { ConnectError } from "@connectrpc/connect";
 import { useState } from "react";
 
 import { useQueryClient } from "@tanstack/react-query";
+import { PlusIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Button } from "../../../components/ui/button";
 import {
@@ -41,7 +42,10 @@ export function CreateTodoModal() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Create Todo</Button>
+        <Button className="mt-4">
+          <PlusIcon />
+          Create Todo
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-sm">
         <form onSubmit={handleSubmit(onSubmit)}>
