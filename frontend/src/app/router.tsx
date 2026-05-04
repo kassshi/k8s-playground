@@ -30,6 +30,7 @@ export function Router() {
             </PrivateRoute>
           }
         />
+        <Route path="*" element={<Navigate to="/todos" replace />} />
       </Routes>
     </BrowserRouter>
   );
