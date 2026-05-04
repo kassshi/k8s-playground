@@ -26,25 +26,27 @@ export function TodosPage() {
   const doneItems = data.todos.filter((todo) => todo.status == Status.DONE);
   return (
     <div>
-      <CreateTodoModal />
-
-      <div className="grid grid-cols-3 gap-4 mt-4">
-        <div>
-          <h2 className="text-lg font-bold mb-4">TODO</h2>
+      <div className="flex items-centor justify-between p-6">
+        <h1>My TODO</h1>
+        <CreateTodoModal />
+      </div>
+      <div className="grid grid-cols-3 gap-4 p-4">
+        <div className="bg-muted/50 rounded-xl p-4 min-h-[400px]">
+          <h2 className="!text-sky-400 font-bold mb-4">TODO</h2>
           {todoItems.map((todo: Todo) => (
             <TodoItem todo={todo} />
           ))}
         </div>
 
-        <div>
-          <h2 className="text-lg font-bold mb-4">IN PROGRESS</h2>
+        <div className="bg-muted/50 rounded-xl p-4 min-h-[400px]">
+          <h2 className="!text-yellow-400 font-bold mb-4">IN PROGRESS</h2>
           {inProgessItems.map((todo: Todo) => (
             <TodoItem todo={todo} />
           ))}
         </div>
 
-        <div>
-          <h2 className="text-lg font-bold mb-4">DONE</h2>
+        <div className="bg-muted/50 rounded-xl p-4 min-h-[400px]">
+          <h2 className="!text-green-400 font-bold mb-4">DONE</h2>
           {doneItems.map((todo: Todo) => (
             <TodoItem todo={todo} />
           ))}

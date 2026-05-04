@@ -3,6 +3,7 @@ import {
     Card,
     CardContent,
     CardDescription,
+    CardHeader,
     CardTitle,
 } from "@/components/ui/card";
 import { useState } from "react";
@@ -22,9 +23,17 @@ export function TodoItem({ todo }: { todo: Todo }) {
         className="mb-4 cursor-pointer"
         onClick={() => setOpenEditModal(true)}
       >
-        <CardTitle>{todo.title}</CardTitle>
-        <CardContent>{todo.description}</CardContent>
-        <CardDescription>
+        <CardHeader>
+          {" "}
+          <CardTitle>{todo.title}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p
+            className="text-sm text-muted-foreground
+  mb-3"
+          >
+            {todo.description}
+          </p>
           {todo.status == Status.TODO && (
             <Badge className="bg-sky-50 text-sky-700 dark:bg-sky-950 dark:text-sky-300">
               TODO
@@ -40,7 +49,7 @@ export function TodoItem({ todo }: { todo: Todo }) {
               DONE
             </Badge>
           )}
-        </CardDescription>
+        </CardContent>
       </Card>
     </div>
   );
