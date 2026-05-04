@@ -54,7 +54,7 @@ func main() {
 	// Create the validation interceptor provided by connectrpc.com/validate.
 	validateInterceptor := validate.NewInterceptor()
 	cors := cors.New(cors.Options{
-		AllowedOrigins: []string{"http://localhost:5173"},
+		AllowedOrigins: config.CorsAllowedOrigins,
 		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE"},
 		AllowedHeaders: []string{"Authorization", "Content-Type",
 			"Connect-Protocol-Version"},
