@@ -1,11 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
 import { Status, type Todo } from "../../../gen/todo/v1/todo_pb";
 import { EditTodoModal } from "./editTodoModal";
