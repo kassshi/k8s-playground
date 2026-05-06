@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: todo-api
+  labels:
+    name: todo-api
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: todo-spa
+  labels:
+    name: todo-spa

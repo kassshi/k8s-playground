@@ -18,3 +18,6 @@ db-migrate:
 
 gen-protobuf:
 	cd proto && buf generate
+
+k8s-create-secret:
+	kubectl create secret generic backend-credentials --from-env-file=backend/.env -n todo-api
