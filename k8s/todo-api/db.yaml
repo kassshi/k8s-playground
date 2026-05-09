@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: db-postgresql
+  namespace: todo-api
+spec:
+  selector:
+    matchLabels:
+      app: db-postgresql
+  serviceName: "db-postgresql"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: db-postgresql
+    spec:
+      containers:
+        - name: db-postgresql
+          image: postgres:17
+          ports:
+            - containerPort: 5432
+              name: db-postgresql
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: backend-credentials
+                  key: DATABASE_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: backend-credentials
+                  key: DATABASE_PASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: backend-credentials
+                  key: DATABASE_NAME
+          volumeMounts:
+            - name: db-postgresql
+              mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+    - metadata:
+        name: db-postgresql
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: "standard"
+        resources:
+          requests:
+            storage: 1Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-postgresql
+  namespace: todo-api
+spec:
+  selector:
+    app: db-postgresql
+  clusterIP: None
+  ports:
+    - name: db-postgresql
+      protocol: TCP
+      port: 5432
+      targetPort: 5432

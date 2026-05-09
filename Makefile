@@ -7,6 +7,9 @@ dev-backend:
 dev-frontend:
 	make -C frontend dev
 
+build-backend:
+	docker build -t golang-practice-api:latest backend/ && kind load docker-image golang-practice-api:latest
+
 up:
 	docker compose --env-file backend/.env up -d
 
@@ -21,3 +24,6 @@ gen-protobuf:
 
 k8s-create-secret:
 	kubectl create secret generic backend-credentials --from-env-file=backend/.env -n todo-api
+
+k8s-apply:
+	kubectl apply -Rf k8s/
