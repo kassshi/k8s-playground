@@ -2,13 +2,18 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"connectrpc.com/connect"
 	"connectrpc.com/grpcreflect"
 	"connectrpc.com/validate"
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/kassshi/golang-practice/backend/internal/config"
 	"github.com/kassshi/golang-practice/backend/internal/gen/auth/v1/authv1connect"
 	"github.com/kassshi/golang-practice/backend/internal/gen/todo/v1/todov1connect"
@@ -24,6 +29,10 @@ import (
 
 func main() {
 
+	if len(os.Args) > 1 && os.Args[1] == "migrate" {
+		execMigrate()
+		return
+	}
 	// Config
 	config, err := config.NewConfig()
 	if err != nil {
@@ -87,4 +96,35 @@ func main() {
 	if err := s.ListenAndServe(); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func execMigrate() {
+
+	// Config
+	config, err := config.NewConfig()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	db, err := sql.Open("postgres", config.DatabaseURL())
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	driver, err := postgres.WithInstance(db, &postgres.Config{})
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	m, err := migrate.NewWithDatabaseInstance(
+		"file:///migrations",
+		"postgres", driver)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+		log.Fatal(err)
+	}
+
 }
