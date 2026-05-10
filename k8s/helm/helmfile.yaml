@@ -1,0 +1,6 @@
+releases:
+  - name: envoy-gateway
+    chart: oci://docker.io/envoyproxy/gateway-helm
+    version: v1.7.3
+    namespace: envoy-gateway-system
+    createNamespace: true
