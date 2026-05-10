@@ -11,3 +11,10 @@ metadata:
   name: todo-spa
   labels:
     name: todo-spa
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gateway
+  labels:
+    name: gateway
