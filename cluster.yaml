@@ -4,6 +4,6 @@ name: k8s-playground
 nodes:
   - role: control-plane
     extraPortMappings:
-      - containerPort: 80
+      - containerPort: 30001
         hostPort: 3001
   - role: worker

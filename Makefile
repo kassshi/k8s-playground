@@ -43,10 +43,18 @@ k8s-apply:
 k8s-helmfile-apply:
 	helmfile apply -f k8s/helm/helmfile.yaml
 
+k8s-delete-cluster:
+	kind delete cluster --name $(KIND_CLUSTER_NAME)
+
 k8s-init:
 	$(MAKE) k8s-create-cluster
 	$(MAKE) k8s-create-namespace
 	$(MAKE) k8s-create-secret
 	$(MAKE) k8s-load-images
+	@if helm plugin list | grep -q '^diff[[:space:]]'; then \
+		echo "helm-diff plugin already installed"; \
+	else \
+		helm plugin install https://github.com/databus23/helm-diff --verify=false; \
+	fi
+	$(MAKE) k8s-helmfile-apply
 	$(MAKE) k8s-apply
-	helm plugin install https://github.com/databus23/helm-diff --verify=false

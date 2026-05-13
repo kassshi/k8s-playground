@@ -15,6 +15,6 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: gateway
+  name: envoy-gateway
   labels:
-    name: gateway
+    name: envoy-gateway
