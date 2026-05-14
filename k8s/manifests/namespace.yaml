@@ -4,6 +4,7 @@ metadata:
   name: todo-api
   labels:
     name: todo-api
+    envoy-gateway-access: "true"
 ---
 apiVersion: v1
 kind: Namespace
@@ -11,6 +12,7 @@ metadata:
   name: todo-spa
   labels:
     name: todo-spa
+    envoy-gateway-access: "true"
 ---
 apiVersion: v1
 kind: Namespace
@@ -18,3 +20,4 @@ metadata:
   name: envoy-gateway
   labels:
     name: envoy-gateway
+    envoy-gateway-access: "true"

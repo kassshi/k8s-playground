@@ -1,0 +1,31 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: gateway-route
+  namespace: todo-api
+spec:
+  parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: "/auth.v1.AuthService"
+      backendRefs:
+        - name: todo-api
+          port: 80
+    - matches:
+        - path:
+            type: PathPrefix
+            value: "/user.v1.UserService"
+      backendRefs:
+        - name: todo-api
+          port: 80
+    - matches:
+        - path:
+            type: PathPrefix
+            value: "/todo.v1.TodoService"
+      backendRefs:
+        - name: todo-api
+          port: 80
