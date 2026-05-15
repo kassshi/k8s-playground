@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: todo-spa
+  namespace: todo-spa
+spec:
+  selector:
+    app: todo-spa
+  ports:
+    - name: todo-spa
+      protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-spa
+  namespace: todo-spa
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: todo-spa
+  template:
+    metadata:
+      labels:
+        app: todo-spa
+    spec:
+      containers:
+        - name: todo-spa
+          image: todo-spa:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 80

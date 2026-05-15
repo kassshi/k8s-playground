@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
         - name: todo-api
-          image: golang-practice-api:latest
+          image: todo-api:latest
           imagePullPolicy: Never
           ports:
             - containerPort: 8080
@@ -42,7 +42,7 @@ spec:
                 name: backend-credentials
       initContainers:
         - name: exec-migrate
-          image: golang-practice-api:latest
+          image: todo-api:latest
           imagePullPolicy: Never
           command:
             - "/server"

@@ -22,6 +22,6 @@ const authErrorInterceptor: Interceptor = (next) => async (req) => {
 };
 
 export const transport = createConnectTransport({
-  baseUrl: "http://localhost:8080",
+  baseUrl: import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080",
   interceptors: [jwtInterceptor, authErrorInterceptor],
 });
