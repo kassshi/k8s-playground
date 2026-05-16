@@ -3,6 +3,7 @@ package middleware
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 )
@@ -10,7 +11,8 @@ import (
 const serviceName = "todo-api"
 
 type Metrics struct {
-	httpRequestCounter *prometheus.CounterVec
+	httpRequestCounter         *prometheus.CounterVec
+	httpRequestDurationSeconds *prometheus.HistogramVec
 }
 
 type StatusRecorder struct {
@@ -29,29 +31,50 @@ func (m *Metrics) MetricsMiddleware(next http.Handler) http.Handler {
 			ResponseWriter: w,
 			statusCode:     http.StatusOK,
 		}
+		startTime := time.Now()
 		next.ServeHTTP(statusRecorder, r)
 		if r.URL.Path != "/metrics" {
-			m.httpRequestCounter.WithLabelValues(serviceName, r.URL.Path, r.Method, strconv.Itoa(statusRecorder.statusCode)).Inc()
+			labels := prometheus.Labels{
+				"service":     serviceName,
+				"path":        r.URL.Path,
+				"method":      r.Method,
+				"status_code": strconv.Itoa(statusRecorder.statusCode),
+			}
+			duration := time.Since(startTime).Seconds()
+			m.httpRequestCounter.With(labels).Inc()
+			m.httpRequestDurationSeconds.With(labels).Observe(duration)
 		}
 
 	})
 }
 
 func NewMetrics(reg prometheus.Registerer) *Metrics {
-	m := httpRequestCounterMetric()
+	m := &Metrics{
+		httpRequestCounter:         httpRequestCounterMetric(),
+		httpRequestDurationSeconds: httpRequestDurationSecondsMetric(),
+	}
 	reg.MustRegister(m.httpRequestCounter)
+	reg.MustRegister(m.httpRequestDurationSeconds)
 	return m
 
 }
 
-func httpRequestCounterMetric() *Metrics {
-	return &Metrics{
-		httpRequestCounter: prometheus.NewCounterVec(
-			prometheus.CounterOpts{
-				Name: "http_requests_total",
-				Help: "Count of http requests",
-			},
-			[]string{"service", "path", "method", "status_code"},
-		),
-	}
+func httpRequestCounterMetric() *prometheus.CounterVec {
+	return prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "http_requests_total",
+			Help: "Count of http requests",
+		},
+		[]string{"service", "path", "method", "status_code"},
+	)
+}
+
+func httpRequestDurationSecondsMetric() *prometheus.HistogramVec {
+	return prometheus.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Name: "http_request_duration_seconds",
+			Help: "Duration of http request in seconds",
+		},
+		[]string{"service", "path", "method", "status_code"},
+	)
 }
