@@ -21,3 +21,11 @@ metadata:
   labels:
     name: envoy-gateway
     envoy-gateway-access: "true"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: prometheus
+  labels:
+    name: prometheus
+    envoy-gateway-access: "true"
