@@ -8,4 +8,6 @@ nodes:
         hostPort: 3001
       - containerPort: 30090
         hostPort: 9090
+      - containerPort: 30091
+        hostPort: 9091
   - role: worker
