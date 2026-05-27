@@ -2,6 +2,7 @@ import { ConnectError } from "@connectrpc/connect";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { signup } from "../../features/auth/api/signup";
+import { Button } from "@/components/ui/button";
 
 type SignupFormValues = {
   email: string;
@@ -44,9 +45,9 @@ export function SignupPage() {
         <input
           {...register("confirm_password")}
           type="password"
-          placeholder="パスワード"
+          placeholder="パスワード(確認)"
         />
-        <button type="submit">登録</button>
+        <Button type="submit">登録</Button>
       </form>
     </div>
   );

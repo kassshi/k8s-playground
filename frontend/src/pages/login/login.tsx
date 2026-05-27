@@ -1,6 +1,7 @@
+import { Button } from "@/components/ui/button";
 import { ConnectError } from "@connectrpc/connect";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { login } from "../../features/auth/api/login";
 
 type LoginFormValues = {
@@ -36,8 +37,13 @@ export function LoginPage() {
           type="password"
           placeholder="パスワード"
         />
-        <button type="submit">ログイン</button>
+        <Button type="submit">ログイン</Button>
       </form>
+      <div className=" grid-cols-3 gap-4 p-4">
+        <Button>
+          <Link to={"/signup"}>アカウント作成</Link>
+        </Button>
+      </div>
     </div>
   );
 }
