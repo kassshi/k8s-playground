@@ -13,7 +13,7 @@ type Config struct {
 	DatabaseName       string   `envconfig:"DATABASE_NAME" required:"true"`
 	DatabaseHost       string   `envconfig:"DATABASE_HOST" required:"true"`
 	DatabasePort       string   `envconfig:"DATABASE_PORT" default:"5432"`
-	JwtSecret          string   `envconfig:"jWT"`
+	JwtSecret          string   `envconfig:"JWT_SECRET" required:"true"`
 	CorsAllowedOrigins []string `envconfig:"CORS_ALLOWED_ORIGINS" default:"http://localhost:5173,http://localhost:3000"`
 }
 

@@ -1,33 +1,41 @@
 KIND_CLUSTER_NAME := k8s-playground
 
-run-backend:
-	make -C backend run
+init:
+	mise install
+	${MAKE} -C backend init
+	${MAKE} -C frontend init
 
-dev-backend:
+setup:
+	$(MAKE) init
+	$(MAKE) gen
+
+gen:
+	$(MAKE) -C proto gen
+	$(MAKE) -C backend sqlc-gen
+
+backend-dev:
 	make -C backend dev
 
-dev-frontend:
+frontend-dev:
 	make -C frontend dev
 
-build-backend:
+db-dev:
+	docker compose --env-file backend/.env up -d db
+
+backend-build:
 	docker build -t todo-api:latest backend/
-	$(MAKE) k8s-load-backend-image
 
-build-frontend:
+frontend-build:
 	docker build -t todo-spa:latest frontend/ --build-arg VITE_API_BASE_URL="http://localhost:3001"
-	$(MAKE) k8s-load-frontend-image
 
-up:
+compose-up:
 	docker compose --env-file backend/.env up -d
 
-down:
+compose-down:
 	docker compose --env-file backend/.env down
 
 db-migrate:
 	docker compose --env-file backend/.env run --rm db-migrate
-
-gen-protobuf:
-	cd proto && buf generate
 
 k8s-create-cluster:
 	kind create cluster --config cluster.yaml --name $(KIND_CLUSTER_NAME)
@@ -61,6 +69,8 @@ k8s-init:
 	$(MAKE) k8s-create-cluster
 	$(MAKE) k8s-create-namespace
 	$(MAKE) k8s-create-secret
+	$(MAKE) backend-build
+	$(MAKE) frontend-build
 	$(MAKE) k8s-load-images
 	@if helm plugin list | grep -q '^diff[[:space:]]'; then \
 		echo "helm-diff plugin already installed"; \
