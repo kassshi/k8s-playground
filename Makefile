@@ -22,11 +22,35 @@ frontend-dev:
 db-dev:
 	docker compose --env-file backend/.env up -d db
 
-backend-build:
+backend-docker-build:
 	docker build -t todo-api:latest backend/
 
-frontend-build:
+frontend-docker-build:
 	docker build -t todo-spa:latest frontend/ --build-arg VITE_API_BASE_URL="http://localhost:3001"
+
+backend-lint:
+	$(MAKE) -C backend lint
+
+frontend-lint:
+	$(MAKE) -C frontend lint
+
+proto-lint:
+	$(MAKE) -C proto lint
+
+backend-test:
+	$(MAKE) -C backend test
+
+frontend-test:
+	$(MAKE) -C frontend test
+
+backend-build:
+	$(MAKE) -C backend build
+
+frontend-build:
+	$(MAKE) -C frontend build
+
+proto-build:
+	$(MAKE) -C proto build
 
 compose-up:
 	docker compose --env-file backend/.env up -d
@@ -69,8 +93,8 @@ k8s-init:
 	$(MAKE) k8s-create-cluster
 	$(MAKE) k8s-create-namespace
 	$(MAKE) k8s-create-secret
-	$(MAKE) backend-build
-	$(MAKE) frontend-build
+	$(MAKE) backend-docker-build
+	$(MAKE) frontend-docker-build
 	$(MAKE) k8s-load-images
 	@if helm plugin list | grep -q '^diff[[:space:]]'; then \
 		echo "helm-diff plugin already installed"; \
@@ -79,3 +103,4 @@ k8s-init:
 	fi
 	$(MAKE) k8s-helmfile-apply
 	$(MAKE) k8s-apply
+
