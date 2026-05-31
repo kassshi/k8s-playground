@@ -1,0 +1,103 @@
+name: "CI"
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  changed-files:
+    runs-on: ubuntu-24.04
+    outputs:
+      backend: ${{ steps.changed-files.outputs.backend_any_changed }}
+      frontend: ${{ steps.changed-files.outputs.frontend_any_changed }}
+      proto: ${{ steps.changed-files.outputs.proto_any_changed }}
+    steps:
+      - name: Checkout Code
+        id: checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96 # v47.0.6
+        with:
+          files_yaml: |
+            backend:
+              - backend/**
+              - '!**.md'
+            frontend:
+              - frontend/**
+              - '!**.md'
+            proto:
+              - proto/**
+              - '!**.md'
+  backend:
+    runs-on: ubuntu-24.04
+    if: ${{ needs.changed-files.outputs.backend == 'true' }}
+    needs:
+      - changed-files
+    steps:
+      - name: Checkout Code
+        id: checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Install tools
+        id: install-tools
+        uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
+        with:
+          version: 2026.5.16
+      - name: Lint
+        run: |
+          make backend-lint
+      - name: Test
+        run: |
+          make backend-test
+      - name: Build
+        run: |
+          make backend-build
+
+  frontend:
+    runs-on: ubuntu-24.04
+    if: ${{ needs.changed-files.outputs.frontend == 'true' }}
+    needs:
+      - changed-files
+    steps:
+      - name: Checkout Code
+        id: checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Install tools
+        id: install-tools
+        uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
+        with:
+          version: 2026.5.16
+      - name: Install dependencies
+        run: |
+          make -C frontend init
+      - name: Lint
+        run: |
+          make frontend-lint
+      - name: Build
+        run: |
+          make frontend-build
+
+  proto:
+    runs-on: ubuntu-24.04
+    if: ${{ needs.changed-files.outputs.proto == 'true' }}
+    needs:
+      - changed-files
+    steps:
+      - name: Checkout Code
+        id: checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Install tools
+        id: install-tools
+        uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
+        with:
+          version: 2026.5.16
+      - name: Lint
+        run: |
+          make proto-lint
+      - name: Build
+        run: |
+          make proto-build
