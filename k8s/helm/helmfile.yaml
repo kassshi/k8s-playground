@@ -1,3 +1,7 @@
+repositories:
+  - name: open-telemetry
+    url: https://open-telemetry.github.io/opentelemetry-helm-charts
+
 releases:
   - name: envoy-gateway
     chart: oci://docker.io/envoyproxy/gateway-helm
@@ -25,3 +29,13 @@ releases:
                 url: http://prometheus-server.prometheus.svc.cluster.local
                 access: proxy
                 isDefault: true
+  - name: opentelemetry-collector
+    chart: open-telemetry/opentelemetry-collector
+    values:
+      - image:
+          repository: otel/opentelemetry-collector-k8s
+      - mode: daemonset
+      - namespaceOverride: opentelemetry
+      - presets:
+          kubernetesAttributes:
+            enabled: true
