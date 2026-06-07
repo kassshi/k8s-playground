@@ -12,11 +12,14 @@ import (
 	"github.com/kassshi/golang-practice/backend/internal/infra/db/sqlc"
 	"github.com/kassshi/golang-practice/backend/internal/middleware"
 	"github.com/kassshi/golang-practice/backend/internal/repository"
+	"go.opentelemetry.io/otel"
 )
 
 type TodoService struct {
 	repository *repository.TodoRepository
 }
+
+var tracer = otel.Tracer("github.com/kassshi/golang-practice/backend/internal/service")
 
 func NewTodoService(repository *repository.TodoRepository) *TodoService {
 	return &TodoService{
@@ -25,6 +28,8 @@ func NewTodoService(repository *repository.TodoRepository) *TodoService {
 }
 
 func (s *TodoService) CreateTodo(ctx context.Context, req *connect.Request[v1.CreateTodoRequest]) (sqlc.Todo, error) {
+	ctx, span := tracer.Start(ctx, "TodoService.CreateTodo")
+	defer span.End()
 	todo := req.Msg.GetTodo()
 	id := uuid.New()
 	userID, err := getUserIDFromcontext(ctx)
