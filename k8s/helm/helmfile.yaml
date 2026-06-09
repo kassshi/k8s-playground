@@ -39,3 +39,5 @@ releases:
       - presets:
           kubernetesAttributes:
             enabled: true
+      - service:
+          enabled: true
