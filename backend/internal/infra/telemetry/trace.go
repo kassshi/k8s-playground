@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/resource"
 	"go.opentelemetry.io/otel/sdk/trace"
@@ -53,7 +53,7 @@ func SetupTraceProvider(ctx context.Context) (func(context.Context) error, error
 	}
 
 	// Set up trace provider.
-	tracerProvider, err := newTracerProvider(res)
+	tracerProvider, err := newTracerProvider(res, ctx)
 	if err != nil {
 		handleErr(err)
 		return shutdown, err
@@ -70,8 +70,8 @@ func newPropagator() propagation.TextMapPropagator {
 	)
 }
 
-func newTracerProvider(res *resource.Resource) (*trace.TracerProvider, error) {
-	traceExporter, err := stdouttrace.New(stdouttrace.WithPrettyPrint())
+func newTracerProvider(res *resource.Resource, ctx context.Context) (*trace.TracerProvider, error) {
+	traceExporter, err := otlptracegrpc.New(ctx)
 	if err != nil {
 		return nil, err
 	}
