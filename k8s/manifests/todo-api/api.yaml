@@ -41,6 +41,14 @@ spec:
           env:
             - name: DATABASE_HOST
               value: db-postgresql
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: http://opentelemetry-collector.opentelemetry.svc.cluster.local:4317
+            - name: OTEL_EXPORTER_OTLP_INSECURE
+              value: "true"
+            - name: OTEL_SERVICE_NAME
+              value: todo-api
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: deployment.environment.name=local
           envFrom:
             - secretRef:
                 name: backend-credentials
