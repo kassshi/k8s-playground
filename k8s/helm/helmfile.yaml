@@ -29,6 +29,17 @@ releases:
                 url: http://prometheus-server.prometheus.svc.cluster.local
                 access: proxy
                 isDefault: true
+              - name: tempo
+                type: tempo
+                url: http://tempo.tempo.svc.cluster.local:3200
+  - name: tempo
+    chart: oci://ghcr.io/grafana-community/helm-charts/tempo
+    version: 2.2.0
+    namespace: tempo
+    createNamespace: true
+    values:
+      - persistence:
+          enabled: true
   - name: opentelemetry-collector
     chart: open-telemetry/opentelemetry-collector
     values:
@@ -41,3 +52,16 @@ releases:
             enabled: true
       - service:
           enabled: true
+      - config:
+          exporters:
+            debug: {}
+            otlp/tempo:
+              endpoint: http://tempo.tempo.svc.cluster.local:4317
+              tls:
+                insecure: true
+          service:
+            pipelines:
+              traces:
+                exporters:
+                  - debug
+                  - otlp/tempo
