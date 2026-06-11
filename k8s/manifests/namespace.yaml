@@ -37,3 +37,10 @@ metadata:
   labels:
     name: grafana
     envoy-gateway-access: "true"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: opentelemetry
+  labels:
+    name: opentelemetry
