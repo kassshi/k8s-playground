@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/exaring/otelpgx"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func NewPool(ctx context.Context, databaseUrl string) (*pgxpool.Pool, error) {
-	config, err := pgxpool.ParseConfig(databaseUrl)
+func NewPool(ctx context.Context, databaseURL string) (*pgxpool.Pool, error) {
+	config, err := pgxpool.ParseConfig(databaseURL)
 
 	if err != nil {
 		return nil, err
@@ -20,11 +21,15 @@ func NewPool(ctx context.Context, databaseUrl string) (*pgxpool.Pool, error) {
 	config.MaxConnIdleTime = 30 * time.Minute
 	config.HealthCheckPeriod = 1 * time.Minute
 
+	config.ConnConfig.Tracer = otelpgx.NewTracer()
+
 	pool, err := pgxpool.NewWithConfig(ctx, config)
 	if err != nil {
 		return nil, fmt.Errorf("new pgx pool: %w", err)
 	}
-
+	if err := otelpgx.RecordStats(pool); err != nil {
+		return nil, fmt.Errorf("unable to record database stats: %w", err)
+	}
 	pingCtx, cancel := context.WithTimeout(ctx, 3*time.Second)
 	defer cancel()
 

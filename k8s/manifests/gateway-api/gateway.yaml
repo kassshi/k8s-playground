@@ -78,3 +78,11 @@ spec:
                   port: 9091
                   targetPort: 9091
         externalTrafficPolicy: Cluster
+  telemetry:
+    tracing:
+      provider:
+        type: OpenTelemetry
+        backendRefs:
+          - name: opentelemetry-collector
+            namespace: opentelemetry
+            port: 4317
