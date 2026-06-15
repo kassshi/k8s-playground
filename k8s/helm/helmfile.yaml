@@ -32,6 +32,13 @@ releases:
               - name: tempo
                 type: tempo
                 url: http://tempo.tempo.svc.cluster.local:3200
+              - name: Loki
+                type: loki
+                url: http://loki.loki.svc.cluster.local:3100
+                access: proxy
+                jsonData:
+                  timeout: 60
+                  maxLines: 1000
   - name: tempo
     chart: oci://ghcr.io/grafana-community/helm-charts/tempo
     version: 2.2.0
