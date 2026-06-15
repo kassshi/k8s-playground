@@ -31,6 +31,7 @@ releases:
                 isDefault: true
               - name: tempo
                 type: tempo
+                uid: tempo
                 url: http://tempo.tempo.svc.cluster.local:3200
               - name: Loki
                 type: loki
@@ -39,6 +40,12 @@ releases:
                 jsonData:
                   timeout: 60
                   maxLines: 1000
+                  derivedFields:
+                    - name: TraceID
+                      matcherRegex: '"trace_id":"([a-f0-9]{32})"'
+                      datasourceUid: tempo
+                      url: "$${__value.raw}"
+
   - name: tempo
     chart: oci://ghcr.io/grafana-community/helm-charts/tempo
     version: 2.2.0
