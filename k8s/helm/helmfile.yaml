@@ -50,6 +50,8 @@ releases:
       - presets:
           kubernetesAttributes:
             enabled: true
+          logsCollection:
+            enabled: true
       - service:
           enabled: true
       - config:
