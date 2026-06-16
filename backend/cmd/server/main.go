@@ -59,7 +59,7 @@ func main() {
 	defer pool.Close()
 
 	// Otel
-	traceProviderShutdown, err := telemetry.SetupTraceProvider(ctx)
+	telemetryShutdown, err := telemetry.SetupTelemetry(ctx)
 	if err != nil {
 		log.Fatalf("failed to setup trace provider: %v", err)
 	}
@@ -68,7 +68,7 @@ func main() {
 		shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 
-		if err := traceProviderShutdown(shutdownCtx); err != nil {
+		if err := telemetryShutdown(shutdownCtx); err != nil {
 			log.Printf("failed to shutdown trace provider: %v", err)
 		}
 	}()
