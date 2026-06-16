@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"time"
@@ -33,6 +34,9 @@ import (
 )
 
 func main() {
+
+	// Logger
+	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stderr, nil)))
 
 	if len(os.Args) > 1 && os.Args[1] == "migrate" {
 		execMigrate()
@@ -86,6 +90,7 @@ func main() {
 	// Create the validation interceptor provided by connectrpc.com/validate.
 	validateInterceptor := validate.NewInterceptor()
 	otelInterceptor, err := otelconnect.NewInterceptor()
+	accessLoggingInterceptor := middleware.NewAccessLoggingInterceptor()
 	if err != nil {
 		log.Fatalf("failed to create OpenTelemetry interceptor: %v", err)
 	}
@@ -100,11 +105,11 @@ func main() {
 	todoHandler := handler.NewTodoHandler(todoService)
 	userHandler := handler.NewUserHandler(userService)
 	oauthHandler := handler.NewAuthHandler(authService)
-	path, h := todov1connect.NewTodoServiceHandler(todoHandler, connect.WithInterceptors(validateInterceptor, otelInterceptor))
+	path, h := todov1connect.NewTodoServiceHandler(todoHandler, connect.WithInterceptors(validateInterceptor, otelInterceptor, accessLoggingInterceptor))
 	mux.Handle(path, middleware.AuthMiddleware(config.JwtSecret)(h))
-	path, h = userv1connect.NewUserServiceHandler(userHandler, connect.WithInterceptors(validateInterceptor, otelInterceptor))
+	path, h = userv1connect.NewUserServiceHandler(userHandler, connect.WithInterceptors(validateInterceptor, otelInterceptor, accessLoggingInterceptor))
 	mux.Handle(path, h)
-	path, h = authv1connect.NewAuthServiceHandler(oauthHandler, connect.WithInterceptors(validateInterceptor, otelInterceptor))
+	path, h = authv1connect.NewAuthServiceHandler(oauthHandler, connect.WithInterceptors(validateInterceptor, otelInterceptor, accessLoggingInterceptor))
 	mux.Handle(path, h)
 
 	// Reflection
