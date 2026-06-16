@@ -33,8 +33,18 @@ releases:
                 type: tempo
                 uid: tempo
                 url: http://tempo.tempo.svc.cluster.local:3200
+                access: proxy
+                basicAuth: false
+                jsonData:
+                  tracesToLogsV2:
+                    datasourceUid: "loki"
+                    spanStartTimeShift: "-10m"
+                    spanEndTimeShift: "10m"
+                    filterByTraceID: true
+                    filterBySpanID: false
               - name: Loki
                 type: loki
+                uid: loki
                 url: http://loki.loki.svc.cluster.local:3100
                 access: proxy
                 jsonData:
