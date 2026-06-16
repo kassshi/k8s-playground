@@ -137,7 +137,9 @@ releases:
     chart: open-telemetry/opentelemetry-collector
     values:
       - image:
-          repository: otel/opentelemetry-collector-k8s
+          repository: otel/opentelemetry-collector-contrib
+      - command:
+          name: otelcol-contrib
       - mode: daemonset
       - namespaceOverride: opentelemetry
       - presets:
@@ -147,6 +149,16 @@ releases:
             enabled: true
       - service:
           enabled: true
+          annotations:
+            prometheus.io/scrape: "true"
+            prometheus.io/path: "/metrics"
+            prometheus.io/port: "8889"
+      - ports:
+          prometheus:
+            enabled: true
+            containerPort: 8889
+            servicePort: 8889
+            protocol: TCP
       - config:
           exporters:
             debug: {}
@@ -156,6 +168,8 @@ releases:
                 insecure: true
             otlphttp/loki:
               endpoint: http://loki.loki.svc.cluster.local:3100/otlp
+            prometheus:
+              endpoint: 0.0.0.0:8889
           service:
             pipelines:
               traces:
@@ -166,3 +180,7 @@ releases:
                 exporters:
                   - debug
                   - otlphttp/loki
+              metrics:
+                exporters:
+                  - debug
+                  - prometheus
