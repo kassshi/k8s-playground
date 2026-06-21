@@ -3,12 +3,12 @@ KIND_CLUSTER_NAME := k8s-playground
 .DEFAULT_GOAL := help
 
 help: ## List commands
-	@echo '使い方: make [Targer]'
+	@echo '使い方: make [Target]'
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| sort \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
-init: ## Initiallization project
+init: ## Initialize project
 	mise install
 	${MAKE} -C backend init
 	${MAKE} -C frontend init
@@ -88,8 +88,12 @@ k8s-load-images: ## Load both backend and frontend Docker images into the kind c
 k8s-create-secret: ## Create a Kubernetes secret for backend credentials
 	kubectl create secret generic backend-credentials --from-env-file=backend/.env -n todo-api
 
-k8s-apply: ## Apply Kubernetes manifests
-	kubectl apply -Rf k8s/manifests/ && $(MAKE) k8s-helmfile-apply
+k8s-apply-all: ## Apply all Kubernetes configurations
+	$(MAKE) k8s-apply-manifests
+	$(MAKE) k8s-helmfile-apply
+
+k8s-apply-manifests: ## Apply Kubernetes manifests
+	kubectl apply -Rf k8s/manifests
 
 k8s-helmfile-apply: ## Apply Helm charts using Helmfile
 	helmfile apply -f k8s/helm/helmfile.yaml
@@ -109,6 +113,6 @@ k8s-init: ## Initialize Kubernetes cluster and deploy application
 	else \
 		helm plugin install https://github.com/databus23/helm-diff --verify=false; \
 	fi
+	$(MAKE) k8s-apply-manifests
 	$(MAKE) k8s-helmfile-apply
-	$(MAKE) k8s-apply
 
