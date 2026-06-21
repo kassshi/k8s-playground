@@ -21,8 +21,11 @@ flowchart LR
         Gateway["Envoy Proxy<br/>configured by Envoy Gateway"]
 
         SPA[React SPA]
-        API[Go API]
+        API[Go API<br/>Connect RPC]
         PostgreSQL[(PostgreSQL)]
+        OTelCollector[OpenTelemetry Collector<br/>DaemonSet]
+        Tempo[(Tempo)]
+        Loki[(Loki)]
         Prometheus[Prometheus]
         Grafana[Grafana]
 
@@ -34,8 +37,16 @@ flowchart LR
 
         SPA --> API
         API --> PostgreSQL
-        Prometheus -->|scrape /metrics| API
+        Gateway -->|OTLP traces| OTelCollector
+        API -->|OTLP traces / metrics| OTelCollector
+        API -.->|stdout logs| OTelCollector
+        OTelCollector --> Tempo
+        OTelCollector --> Loki
+        OTelCollector -->|:8889/metrics| Prometheus
+        Prometheus -->|scrape| OTelCollector
         Grafana -->|query metrics| Prometheus
+        Grafana -->|query traces| Tempo
+        Grafana -->|query logs| Loki
     end
 
     Browser --> Ports
@@ -76,6 +87,9 @@ flowchart LR
 
 - Prometheus
 - Grafana
+- OpenTelemetry Collector
+- Tempo
+- Loki
 
 ### Development Tools
 
@@ -126,7 +140,7 @@ Open the Todo application:
 
 ## Kubernetes
 
-Create a local kind cluster and deploy the application, Envoy Gateway, Prometheus, and Grafana.
+Create a local kind cluster and deploy the application, Envoy Gateway, Prometheus, Grafana, Tempo, Loki, and the OpenTelemetry Collector.
 
 ```sh
 make k8s-init
