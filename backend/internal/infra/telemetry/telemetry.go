@@ -6,13 +6,15 @@ import (
 	"time"
 
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
 	"go.opentelemetry.io/otel/propagation"
+	"go.opentelemetry.io/otel/sdk/metric"
 	"go.opentelemetry.io/otel/sdk/resource"
 	"go.opentelemetry.io/otel/sdk/trace"
 )
 
-func SetupTraceProvider(ctx context.Context) (func(context.Context) error, error) {
+func SetupTelemetry(ctx context.Context) (func(context.Context) error, error) {
 	var shutdownFuncs []func(context.Context) error
 	var err error
 
@@ -60,6 +62,16 @@ func SetupTraceProvider(ctx context.Context) (func(context.Context) error, error
 	}
 	shutdownFuncs = append(shutdownFuncs, tracerProvider.Shutdown)
 	otel.SetTracerProvider(tracerProvider)
+
+	// Set up meter provider.
+	meterProvider, err := newMeterProvider(res, ctx)
+	if err != nil {
+		handleErr(err)
+		return shutdown, err
+	}
+	shutdownFuncs = append(shutdownFuncs, meterProvider.Shutdown)
+	otel.SetMeterProvider(meterProvider)
+
 	return shutdown, err
 }
 
@@ -83,4 +95,19 @@ func newTracerProvider(res *resource.Resource, ctx context.Context) (*trace.Trac
 		trace.WithResource(res),
 	)
 	return tracerProvider, nil
+}
+
+func newMeterProvider(res *resource.Resource, ctx context.Context) (*metric.MeterProvider, error) {
+	metricExporter, err := otlpmetricgrpc.New(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	meterProvider := metric.NewMeterProvider(
+		metric.WithReader(metric.NewPeriodicReader(metricExporter,
+			// Default is 1m. Set to 3s for demonstrative purposes.
+			metric.WithInterval(3*time.Second))),
+		metric.WithResource(res),
+	)
+	return meterProvider, nil
 }
